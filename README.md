@@ -2,6 +2,10 @@
 
 This repository collects code, visualizations, OEIS links, and notes related to the Euclidean decomposition of multiplication table entries.
 
+## Website
+
+Public site: [fdw-hk.github.io/euclidean-decomposition](https://fdw-hk.github.io/euclidean-decomposition/)
+
 ## Project links
 
 - [OEIS sequences](oeis/sequences.md)
