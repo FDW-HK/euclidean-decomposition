@@ -2,6 +2,13 @@
 
 This repository collects code, visualizations, OEIS links, and notes related to the Euclidean decomposition of multiplication table entries.
 
+## Project links
+
+- [OEIS sequences](oeis/sequences.md)
+- [Zenodo papers](papers/zenodo.md)
+- [Images](images/README.md)
+- [Code](code/README.md)
+
 For a fixed integer \(n\), multiplication table entries may be written in the form
 
     i*j = q*n + r,
