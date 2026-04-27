@@ -24,6 +24,7 @@ Different projections, slices, supports, and multiplicities of this array are re
 
 - [Memory stride visualization](widgets/stride.html)
 - [Divisor window visualization](widgets/divisor-window.html)
+- [Moving frame visualization](widgets/moving-frame.html)
 
 ## Repository
 
