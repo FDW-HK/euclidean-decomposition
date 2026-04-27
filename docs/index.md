@@ -19,12 +19,7 @@ Different projections, slices, supports, and multiplicities of this array are re
 - [Cloud chambers](cloud-chambers.md)
 - [Code](code.md)
 - [Notes](notes.md)
-
-## Interactive visualizations
-
-- [Memory stride visualization](widgets/stride.html)
-- [Divisor window visualization](widgets/divisor-window.html)
-- [Moving frame visualization](widgets/moving-frame.html)
+- [Interactive visualizations](visualizations.md)
 
 ## Repository
 
