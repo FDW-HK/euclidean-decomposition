@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Euclidean Decomposition Engine — Bottom-Left Anchor</title>
+    <style>
+        body {
+            background-color: #0f111a;
+            color: #ffffff;
+            font-family: monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            font-weight: normal;
+            margin-bottom: 10px;
+        }
+
+        p {
+            max-width: 900px;
+            color: #cfcfcf;
+            text-align: center;
+            line-height: 1.45;
+        }
+
+        #controls {
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            background-color: #1a1c29;
+            padding: 15px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            max-width: 900px;
+        }
+
+        button,
+        input[type="range"],
+        input[type="number"] {
+            background-color: #2a2d3d;
+            color: white;
+            border: 1px solid #4a4d5d;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-family: monospace;
+        }
+
+        button:hover {
+            background-color: #3a3d4d;
+        }
+
+        .record-btn {
+            background-color: #8b0000;
+        }
+
+        .record-btn:hover {
+            background-color: #a00000;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-right: 1px solid #333;
+            padding-right: 15px;
+        }
+
+        .control-group:last-child {
+            border-right: none;
+            padding-right: 0;
+        }
+
+        /*
+           Fixed void box.
+
+           The moving n by n frame is drawn inside this maxN by maxN canvas.
+           The active frame is anchored at the bottom-left by drawing it at
+
+               x = 0,
+               y = maxN - currentN.
+        */
+        #frameContainer {
+            background-color: #000;
+            border: 1px solid #4a4d5d;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            box-shadow: 0 0 30px rgba(0,0,0,0.9);
+        }
+
+        canvas {
+            image-rendering: pixelated;
+        }
+
+        .note {
+            margin-top: 12px;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Euclidean Decomposition Engine</h1>
+
+    <p>
+        Moving support frame for the positive-indexed multiplication table.
+        The active n by n frame is anchored at the bottom-left corner of the fixed boundary.
+    </p>
+
+    <div id="controls">
+        <div class="control-group">
+            <button id="playBtn">Play / Pause</button>
+        </div>
+
+        <div class="control-group">
+            <label>Speed:</label>
+            <input type="range" id="speedSlider" min="1" max="100" value="50" style="width: 100px;">
+        </div>
+
+        <div class="control-group">
+            <label>Max Frame (N):</label>
+            <input type="number" id="maxNInput" value="600" min="10" max="2000" step="10" style="width: 70px;">
+        </div>
+
+        <div class="control-group">
+            <input type="range" id="nSlider" min="1" max="800" value="10" style="width: 150px;">
+            <span id="nDisplay" style="width: 80px;">n = 10</span>
+        </div>
+
+        <div class="control-group">
+            <button id="recordBtn" class="record-btn">Start Recording</button>
+        </div>
+    </div>
+
+    <div id="frameContainer">
+        <canvas id="engineCanvas"></canvas>
+    </div>
+
+    <div class="note">
+        Bottom-left anchor: the lower-left corner remains fixed while n grows.
+    </div>
+
+    <script>
+        const canvas = document.getElementById('engineCanvas');
+        const ctx = canvas.getContext('2d', { alpha: false });
+
+        const playBtn = document.getElementById('playBtn');
+        const recordBtn = document.getElementById('recordBtn');
+        const nSlider = document.getElementById('nSlider');
+        const nDisplay = document.getElementById('nDisplay');
+        const maxNInput = document.getElementById('maxNInput');
+        const speedSlider = document.getElementById('speedSlider');
+        const frameContainer = document.getElementById('frameContainer');
+
+        let isPlaying = false;
+        let maxN = parseInt(maxNInput.value);
+        let n = parseInt(nSlider.value);
+        let animationId;
+
+        let frameCount = 0;
+
+        let mediaRecorder;
+        let recordedChunks = [];
+        let isRecording = false;
+
+        function setFrameBoundary() {
+            maxN = parseInt(maxNInput.value);
+
+            if (maxN > 2000) {
+                maxN = 2000;
+                maxNInput.value = 2000;
+            }
+
+            nSlider.max = maxN;
+
+            if (n > maxN) {
+                n = maxN;
+                nSlider.value = n;
+            }
+
+            canvas.width = maxN;
+            canvas.height = maxN;
+
+            frameContainer.style.width = maxN + 'px';
+            frameContainer.style.height = maxN + 'px';
+
+            drawGrid(n);
+        }
+
+        function drawGrid(currentN) {
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, maxN, maxN);
+
+            if (currentN <= 0) return;
+
+            const length = currentN * currentN;
+            const grid = new Uint8Array(length);
+
+            /*
+               Engine core.
+
+               This is the memory-stride form of the support row.
+               For each a, mark all products
+
+                   a, 2a, 3a, ..., n*a
+
+               in the flattened row by setting
+
+                   row[a-1 : a*n : a] = 1.
+            */
+            for (let a = 1; a <= currentN; a++) {
+                const maxIndex = a * currentN;
+
+                for (let i = a - 1; i < maxIndex; i += a) {
+                    grid[i] = 1;
+                }
+            }
+
+            const imgData = ctx.createImageData(currentN, currentN);
+            const data = imgData.data;
+
+            for (let i = 0; i < length; i++) {
+                const pixelIndex = i * 4;
+
+                if (grid[i] === 1) {
+                    data[pixelIndex] = 150;
+                    data[pixelIndex + 1] = 180;
+                    data[pixelIndex + 2] = 255;
+                    data[pixelIndex + 3] = 255;
+                } else {
+                    data[pixelIndex] = 0;
+                    data[pixelIndex + 1] = 0;
+                    data[pixelIndex + 2] = 0;
+                    data[pixelIndex + 3] = 255;
+                }
+            }
+
+            /*
+               Bottom-left anchoring.
+
+               The x-coordinate stays 0.
+               The y-coordinate is shifted down by maxN - currentN.
+
+               Therefore the lower-left corner of the active frame remains fixed.
+            */
+            const anchorX = 0;
+            const anchorY = maxN - currentN;
+
+            ctx.putImageData(imgData, anchorX, anchorY);
+        }
+
+        function advanceEngine(amount) {
+            n += amount;
+
+            if (n >= maxN) {
+                n = maxN;
+                isPlaying = false;
+
+                if (isRecording) {
+                    stopRecording();
+                }
+            }
+
+            nSlider.value = n;
+            nDisplay.innerText = `n = ${n}`;
+            drawGrid(n);
+        }
+
+        function tick() {
+            if (isPlaying) {
+                const speedVal = parseInt(speedSlider.value);
+
+                let skip = 0;
+                let steps = 1;
+
+                if (speedVal > 50) {
+                    steps = speedVal - 49;
+                } else if (speedVal < 50) {
+                    skip = 50 - speedVal;
+                }
+
+                if (skip > 0) {
+                    frameCount++;
+
+                    if (frameCount > skip) {
+                        advanceEngine(1);
+                        frameCount = 0;
+                    }
+                } else {
+                    advanceEngine(steps);
+                }
+            }
+
+            animationId = requestAnimationFrame(tick);
+        }
+
+        nSlider.addEventListener('input', (e) => {
+            n = parseInt(e.target.value);
+            nDisplay.innerText = `n = ${n}`;
+            drawGrid(n);
+            frameCount = 0;
+        });
+
+        maxNInput.addEventListener('change', () => {
+            setFrameBoundary();
+        });
+
+        playBtn.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+        });
+
+        function startRecording() {
+            const stream = canvas.captureStream(60);
+
+            const options = {
+                mimeType: 'video/webm; codecs=vp9',
+                videoBitsPerSecond: 400000000
+            };
+
+            try {
+                mediaRecorder = new MediaRecorder(stream, options);
+            } catch (e) {
+                mediaRecorder = new MediaRecorder(stream, {
+                    videoBitsPerSecond: 100000000
+                });
+            }
+
+            mediaRecorder.ondataavailable = function(e) {
+                if (e.data.size > 0) {
+                    recordedChunks.push(e.data);
+                }
+            };
+
+            mediaRecorder.onstop = function() {
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Euclidean_Decomposition_BottomLeft_${maxN}_HighRes.webm`;
+                a.click();
+
+                URL.revokeObjectURL(url);
+                recordedChunks = [];
+            };
+
+            mediaRecorder.start();
+            isRecording = true;
+
+            recordBtn.innerText = "Stop & Save Video";
+            recordBtn.style.backgroundColor = "#ff0000";
+        }
+
+        function stopRecording() {
+            mediaRecorder.stop();
+            isRecording = false;
+
+            recordBtn.innerText = "Start Recording";
+            recordBtn.style.backgroundColor = "#8b0000";
+        }
+
+        recordBtn.addEventListener('click', () => {
+            if (isRecording) {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        });
+
+        setFrameBoundary();
+        tick();
+    </script>
+</body>
+</html>
