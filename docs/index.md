@@ -20,6 +20,11 @@ Different projections, slices, supports, and multiplicities of this array are re
 - [Code](code.md)
 - [Notes](notes.md)
 
+## Interactive visualizations
+
+- [Memory stride visualization](widgets/stride.html)
+- [Divisor window visualization](widgets/divisor-window.html)
+
 ## Repository
 
 The source repository is available on GitHub.
