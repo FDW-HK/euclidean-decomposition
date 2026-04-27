@@ -18,4 +18,8 @@ These visualizations are informally called cloud chambers in this project.
 
 ![Support cloud chamber for n=256](assets/images/cloud-chambers/n256.png)
 
+## Interactive visualizations
+
+- [Memory stride visualization](widgets/stride.html)
+
 [Back to home](./)
