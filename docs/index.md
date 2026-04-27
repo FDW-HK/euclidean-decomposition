@@ -27,4 +27,4 @@ Different projections, slices, supports, and multiplicities of this array are re
 
 ## Repository
 
-The source repository is available on GitHub.
+The source repository is available at [github.com/FDW-HK/euclidean-decomposition](https://github.com/FDW-HK/euclidean-decomposition).
