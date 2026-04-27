@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Divisor Window Visualization</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #fdfdfd;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        input[type="number"] {
+            width: 60px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 30px;
+        }
+
+        .matrix-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            border-collapse: collapse;
+            cursor: crosshair;
+        }
+
+        td, th {
+            border: 1px solid #e0e0e0;
+            width: 35px;
+            height: 35px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        th {
+            background: #f8f9fa;
+            color: #666;
+            font-weight: normal;
+        }
+
+        .cell {
+            transition: all 0.2s;
+        }
+
+        .cell:hover {
+            background: #ffeb3b !important;
+            transform: scale(1.1);
+            z-index: 10;
+            position: relative;
+            border-color: #fbc02d;
+        }
+
+        .info-panel {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #2196f3;
+            height: fit-content;
+        }
+
+        .info-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #1976d2;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .formula {
+            font-family: Georgia, serif;
+            font-style: italic;
+            background: #fff;
+            padding: 8px;
+            border-radius: 4px;
+            margin: 10px 0;
+            border: 1px solid #eee;
+        }
+
+        .divisor-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .divisor {
+            padding: 2px 6px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        .in-window {
+            background: #4caf50;
+            color: white;
+            border-color: #388e3c;
+            font-weight: bold;
+        }
+
+        code {
+            background: #f2f2f2;
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 800px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .info-panel {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Divisor Window Visualization</h2>
+
+    <p>
+        Hover over the matrix <code>A(n,q,r)</code> to see how the window
+        <code>q &lt; d &lt; n</code> captures divisors of
+        <code>m = q*n + r</code>.
+    </p>
+
+    <div class="controls">
+        <label>
+            Set <strong>n</strong>:
+            <input type="number" id="nVal" value="6" min="1" max="30">
+        </label>
+    </div>
+
+    <div class="layout">
+        <div class="matrix-wrapper">
+            <table id="matrix"></table>
+        </div>
+
+        <div class="info-panel" id="infoPanel">
+            <div class="info-title">Cell Details</div>
+            <div id="details">Hover over a cell to see the window logic.</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const nInput = document.getElementById('nVal');
+    const matrixTable = document.getElementById('matrix');
+    const detailsDiv = document.getElementById('details');
+
+    function getDivisors(num) {
+        const divs = [];
+        for (let i = 1; i <= num; i++) {
+            if (num % i === 0) divs.push(i);
+        }
+        return divs;
+    }
+
+    function updateDetails(q, r, n) {
+        const m = q * n + r;
+
+        if (q === 0 && r === 0) {
+            detailsDiv.innerHTML = `
+                <strong>Special case: (q,r) = (0,0)</strong><br>
+                Formula: <code>2*n - 1</code><br>
+                Value: <strong>${2*n - 1}</strong>
+            `;
+            return;
+        }
+
+        const divisors = getDivisors(m);
+        const validDivisors = divisors.filter(d => d > q && d < n);
+
+        let divHtml = divisors.map(d => {
+            const isInside = d > q && d < n;
+            return `<span class="divisor ${isInside ? 'in-window' : ''}">${d}</span>`;
+        }).join('');
+
+        detailsDiv.innerHTML = `
+            <div class="formula">m = (${q} &times; ${n}) + ${r} = <strong>${m}</strong></div>
+            <div>Window: <strong>${q} &lt; d &lt; ${n}</strong></div>
+            <div style="margin-top:10px">Divisors of ${m}:</div>
+            <div class="divisor-list">${divHtml}</div>
+            <p style="margin-top:15px">
+                Count: <strong>${validDivisors.length}</strong><br>
+                <small>These are the divisors d of m lying strictly inside the divisor window.</small>
+            </p>
+        `;
+    }
+
+    function render() {
+        const n = parseInt(nInput.value);
+        matrixTable.innerHTML = '';
+
+        let header = '<tr><th>q\\r</th>';
+        for (let r = 0; r < n; r++) {
+            header += `<th>${r}</th>`;
+        }
+        matrixTable.innerHTML += header + '</tr>';
+
+        for (let q = 0; q < n; q++) {
+            let row = `<tr><th>${q}</th>`;
+
+            for (let r = 0; r < n; r++) {
+                let count;
+
+                if (q === 0 && r === 0) {
+                    count = 2 * n - 1;
+                } else {
+                    const m = q * n + r;
+                    count = getDivisors(m).filter(d => d > q && d < n).length;
+                }
+
+                const opacity = count === 0 ? 0.1 : Math.min(0.2 + (count / n), 1);
+
+                row += `<td class="cell"
+                            style="background: rgba(33, 150, 243, ${opacity})"
+                            onmouseover="updateDetails(${q}, ${r}, ${n})">
+                            ${count}
+                        </td>`;
+            }
+
+            matrixTable.innerHTML += row + '</tr>';
+        }
+    }
+
+    nInput.addEventListener('input', render);
+    render();
+</script>
+
+</body>
+</html>
