@@ -57,14 +57,6 @@
             background-color: #3a3d4d;
         }
 
-        .record-btn {
-            background-color: #8b0000;
-        }
-
-        .record-btn:hover {
-            background-color: #a00000;
-        }
-
         .control-group {
             display: flex;
             align-items: center;
@@ -78,15 +70,6 @@
             padding-right: 0;
         }
 
-        /*
-           Fixed void box.
-
-           The moving n by n frame is drawn inside this maxN by maxN canvas.
-           The active frame is anchored at the bottom-left by drawing it at
-
-               x = 0,
-               y = maxN - currentN.
-        */
         #frameContainer {
             background-color: #000;
             border: 1px solid #4a4d5d;
@@ -128,16 +111,12 @@
 
         <div class="control-group">
             <label>Max Frame (N):</label>
-            <input type="number" id="maxNInput" value="600" min="10" max="2000" step="10" style="width: 70px;">
+            <input type="number" id="maxNInput" value="800" min="10" max="2000" step="10" style="width: 70px;">
         </div>
 
         <div class="control-group">
             <input type="range" id="nSlider" min="1" max="800" value="10" style="width: 150px;">
             <span id="nDisplay" style="width: 80px;">n = 10</span>
-        </div>
-
-        <div class="control-group">
-            <button id="recordBtn" class="record-btn">Start Recording</button>
         </div>
     </div>
 
@@ -154,7 +133,6 @@
         const ctx = canvas.getContext('2d', { alpha: false });
 
         const playBtn = document.getElementById('playBtn');
-        const recordBtn = document.getElementById('recordBtn');
         const nSlider = document.getElementById('nSlider');
         const nDisplay = document.getElementById('nDisplay');
         const maxNInput = document.getElementById('maxNInput');
@@ -164,13 +142,7 @@
         let isPlaying = false;
         let maxN = parseInt(maxNInput.value);
         let n = parseInt(nSlider.value);
-        let animationId;
-
         let frameCount = 0;
-
-        let mediaRecorder;
-        let recordedChunks = [];
-        let isRecording = false;
 
         function setFrameBoundary() {
             maxN = parseInt(maxNInput.value);
@@ -205,18 +177,6 @@
             const length = currentN * currentN;
             const grid = new Uint8Array(length);
 
-            /*
-               Engine core.
-
-               This is the memory-stride form of the support row.
-               For each a, mark all products
-
-                   a, 2a, 3a, ..., n*a
-
-               in the flattened row by setting
-
-                   row[a-1 : a*n : a] = 1.
-            */
             for (let a = 1; a <= currentN; a++) {
                 const maxIndex = a * currentN;
 
@@ -244,14 +204,6 @@
                 }
             }
 
-            /*
-               Bottom-left anchoring.
-
-               The x-coordinate stays 0.
-               The y-coordinate is shifted down by maxN - currentN.
-
-               Therefore the lower-left corner of the active frame remains fixed.
-            */
             const anchorX = 0;
             const anchorY = maxN - currentN;
 
@@ -264,10 +216,6 @@
             if (n >= maxN) {
                 n = maxN;
                 isPlaying = false;
-
-                if (isRecording) {
-                    stopRecording();
-                }
             }
 
             nSlider.value = n;
@@ -300,7 +248,7 @@
                 }
             }
 
-            animationId = requestAnimationFrame(tick);
+            requestAnimationFrame(tick);
         }
 
         nSlider.addEventListener('input', (e) => {
@@ -316,64 +264,6 @@
 
         playBtn.addEventListener('click', () => {
             isPlaying = !isPlaying;
-        });
-
-        function startRecording() {
-            const stream = canvas.captureStream(60);
-
-            const options = {
-                mimeType: 'video/webm; codecs=vp9',
-                videoBitsPerSecond: 400000000
-            };
-
-            try {
-                mediaRecorder = new MediaRecorder(stream, options);
-            } catch (e) {
-                mediaRecorder = new MediaRecorder(stream, {
-                    videoBitsPerSecond: 100000000
-                });
-            }
-
-            mediaRecorder.ondataavailable = function(e) {
-                if (e.data.size > 0) {
-                    recordedChunks.push(e.data);
-                }
-            };
-
-            mediaRecorder.onstop = function() {
-                const blob = new Blob(recordedChunks, { type: 'video/webm' });
-                const url = URL.createObjectURL(blob);
-
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `Euclidean_Decomposition_BottomLeft_${maxN}_HighRes.webm`;
-                a.click();
-
-                URL.revokeObjectURL(url);
-                recordedChunks = [];
-            };
-
-            mediaRecorder.start();
-            isRecording = true;
-
-            recordBtn.innerText = "Stop & Save Video";
-            recordBtn.style.backgroundColor = "#ff0000";
-        }
-
-        function stopRecording() {
-            mediaRecorder.stop();
-            isRecording = false;
-
-            recordBtn.innerText = "Start Recording";
-            recordBtn.style.backgroundColor = "#8b0000";
-        }
-
-        recordBtn.addEventListener('click', () => {
-            if (isRecording) {
-                stopRecording();
-            } else {
-                startRecording();
-            }
         });
 
         setFrameBoundary();
