@@ -16,4 +16,6 @@ These visualizations are informally called cloud chambers in this project.
 
 ## n = 256
 
-![Support cloud chamber for n=256](../images/cloud-chambers/n256.png)
+![Support cloud chamber for n=256](assets/images/cloud-chambers/n256.png)
+
+[Back to home](./)
