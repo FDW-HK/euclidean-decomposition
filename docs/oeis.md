@@ -16,12 +16,13 @@ with the precise indexing convention depending on the sequence.
 | [A393746](https://oeis.org/A393746) | Triangle read by rows: T(n,k) is the number of ordered pairs (i,j) with 0 <= i,j < n such that i*j = k*n. | r = 0 slice of the zero-based master array. |
 | [A394016](https://oeis.org/A394016) | Triangle read by rows: T(n,k) = 1 if k appears in the n X n multiplication table, otherwise 0. | Positive-indexed support triangle. |
 | [A395373](https://oeis.org/A395373) | Triangle read by rows: T(n,k) is the number of ordered pairs (x,y) with 1 <= x,y <= n such that x*y = k. | Positive-indexed multiplicity triangle / colored support. |
+| [A395409](https://oeis.org/A395409) | a(n) = A033677(n) - A135034(n); excess of the smallest divisor of n >= sqrt(n) over ceiling(sqrt(n)). | This measures the gap between the square-root threshold and the least k such that n appears in the k X k multiplication table. |
 
 ## Allocated / in review
 
 | OEIS | Status | Notes |
 |---|---|---|
-| [A395409](https://oeis.org/A395409) | Allocated | Reserved for a related sequence. |
+| - | Allocated | Reserved for a related sequence. |
 
 ## Relationship to the master array
 
