@@ -4,7 +4,7 @@ Project notes and observations will be collected here.
 
 ## Featured PDF
 
-*Note on the support:*
+*Note on the support.*
 <object
   data="notes/Internal_Notes_Support_Deltas.pdf"
   type="application/pdf"
