@@ -11,7 +11,7 @@ Project notes and observations will be collected here.
   height="760px">
   <p>
     Your browser cannot display this PDF.
-    <a href="assets/pdfs/support.pdf">Open it here.</a>
+    <a href="notes/146 ways to overclaim — carefully avoided.pdf">Open it here.</a>
   </p>
 </object>
 
