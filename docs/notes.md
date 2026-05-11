@@ -18,11 +18,9 @@ Project notes and observations will be collected here.
 
 # Explorations
 
-<div style="border: 2px solid #777; border-radius: 8px; padding: 1rem; margin: 1.5rem 0;">
-  <strong>Analogy, not assertion.</strong>
-  <p>
-    Throughout, these parallels are structural analogies only; no physical identification is intended.
-  </p>
+<div style="border: 2px solid #555; border-radius: 6px; padding: 1rem; margin: 1.5rem 0;">
+  <strong>Analogy, not assertion.</strong><br><br>
+  Throughout, these parallels are structural analogies only; no physical identification is intended.
 </div>
 
 
