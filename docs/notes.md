@@ -18,8 +18,13 @@ Project notes and observations will be collected here.
 
 # Explorations
 
-#### Throughout, these parallels are structural analogies only; no physical identification is intended.
-#### Aanalogy, not assertion.
+<div style="border: 2px solid #777; border-radius: 8px; padding: 1rem; margin: 1.5rem 0;">
+  <strong>Analogy, not assertion.</strong>
+  <p>
+    Throughout, these parallels are structural analogies only; no physical identification is intended.
+  </p>
+</div>
+
 
 ## 146 structural parallels to physics, astronomy, computaiton and other sciences in arithmetic.
 <object
