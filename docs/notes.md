@@ -24,7 +24,7 @@ Project notes and observations will be collected here.
 </div>
 
 
-## 146 structural parallels to physics, astronomy, computation and other sciences in arithmetic.
+## 146 structural parallels to physics, astronomy, computation, and other sciences in arithmetic.
 <object
   data="notes/146_Structural_Parallels_to_Physics_Astronomy_Computation_and_other_Sciences_in_Arithmetic.pdf"
   type="application/pdf"
