@@ -16,9 +16,10 @@ Project notes and observations will be collected here.
   </p>
 </object>
 
-## Explorations. PDF
-Throughout, these parallels are structural analogies only; no physical identification is intended.
-Aanalogy, not assertion.
+## Explorations
+
+#### Throughout, these parallels are structural analogies only; no physical identification is intended.
+#### Aanalogy, not assertion.
 
 *146 structural parallels to physics, astronomy, computaiton and other sciences in arithmetic:*
 <object
