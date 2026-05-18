@@ -50,7 +50,7 @@ Project notes and observations will be collected here.
 
 ## Updated Parallels - The Coordinate Ladder and Immanent Backreaction:
 <object
-  data="notes/146_ways_to_overclaim_carefully_avoided.pdf"
+  data="notes/Updated_Parallels_The_Coordinate_Ladder_and_Immanent_Backreaction.pdf"
   type="application/pdf"
   width="100%"
   height="760px">
