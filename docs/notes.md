@@ -24,7 +24,7 @@ Project notes and observations will be collected here.
 </div>
 
 
-## 146 structural parallels to physics, astronomy, computation, and other sciences in arithmetic.
+## 146 structural parallels to physics, astronomy, computation, and other sciences in arithmetic:
 <object
   data="notes/146_Structural_Parallels_to_Physics_Astronomy_Computation_and_other_Sciences_in_Arithmetic.pdf"
   type="application/pdf"
@@ -45,6 +45,18 @@ Project notes and observations will be collected here.
   <p>
     Your browser cannot display this PDF.
     <a href="notes/146_ways_to_overclaim_carefully_avoided.pdf">Open it here.</a>
+  </p>
+</object>
+
+## Updated Parallels - The Coordinate Ladder and Immanent Backreaction:
+<object
+  data="notes/146_ways_to_overclaim_carefully_avoided.pdf"
+  type="application/pdf"
+  width="100%"
+  height="760px">
+  <p>
+    Your browser cannot display this PDF.
+    <a href="notes/Updated_Parallels_The_Coordinate_Ladder_and_Immanent_Backreaction.pdf">Open it here.</a>
   </p>
 </object>
 
