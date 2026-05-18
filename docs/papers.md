@@ -13,6 +13,7 @@ This page collects papers related to the Euclidean decomposition of the multipli
 | Euclidean Transport of Multiplication | Main transport paper. Defines the quotient-remainder array A_d(n,q,r), proves the rank-independent transport map for fixed products, and studies transport under base change. | [10.5281/zenodo.19273836](https://doi.org/10.5281/zenodo.19273836) |
 | On the Motion of Numbers | Studies the motion and appearances of fixed integers across growing multiplication tables. | [10.5281/zenodo.19390886](https://doi.org/10.5281/zenodo.19390886) |
 | Continuous Euclidean Transport | Records continuous Euclidean transport under a change of positive real base. | [10.5281/zenodo.19899679](https://doi.org/10.5281/zenodo.19899679) |
+| Motion and Animation in Multiplication | We record immanent coordinate systems carried by the support of the multiplication tables and distinguish fixed-number Euclidean motion from Zusean frame-to-frame animation. | [10.5281/zenodo.19899679](https://doi.org/10.5281/zenodo.20130521) |
 
 ## Core viewpoint
 
